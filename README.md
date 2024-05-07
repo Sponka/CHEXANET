@@ -1,7 +1,7 @@
 <table border="0" style="width: 100%; border-collapse: collapse;">
   <tr>
     <td style="width: 50px; vertical-align: top;">
-      <img src="Figures/logo_chexanet.png" alt="CHEXANET Logo" width="2000">
+      <img src="Figures/logo_chexanet.png" alt="CHEXANET Logo" width="200">
     </td>
     <td>
       <h1 style="margin-top: 0;">CHEXANET: A Novel Approach to Fast-Tracking Disequilibrium Chemistry Calculations for Exoplanets Using Neural Networks</h1>
