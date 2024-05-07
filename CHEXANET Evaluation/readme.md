@@ -4,4 +4,4 @@ The notebook contains an example of a network evaluation code. Due to size restr
 
 # SOME INTERESTING FIGURES
 
-<p align="center"><img src=""></p>
+<p align="center"><img src="figures/co2_coratio.png"></p>
