@@ -1,6 +1,7 @@
 <div align="left">
   <img src="Figures/logo_chexanet.png" alt="CHEXANET Logo" width="100" style="float: left; margin-right: 20px;">
-  <h1>CHEXANET: A Novel Approach to Fast-Tracking Disequilibrium Chemistry Calculations for Exoplanets Using Neural Networks</h1>
+  <h1>CHEXANET: A Novel Approach to Fast-Tracking Disequilibrium 
+    Chemistry Calculations for Exoplanets Using Neural Networks</h1>
 </div>
 
 <div style="clear: both;"></div>
