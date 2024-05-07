@@ -26,7 +26,6 @@
 - tensorflow (Tensorflow-gpu)
 - keras
 - scikit-learn
-- shap
 - joblib
 - seaborn
 - statsmodels
