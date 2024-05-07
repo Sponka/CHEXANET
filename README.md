@@ -8,7 +8,7 @@
 
 
  # Prerequisites 
- - numpy
+- numpy
 - pandas
 - matplotlib
 - tabulate
@@ -21,11 +21,10 @@
 - string
 - copy
 - scipy
-- forecaster (ensure you have the correct installation source)
-- taurex (ensure you have the correct installation source)
+- <a href='https://pypi.org/project/astro-forecaster/'>forecaster</a> (ensure you have the correct installation source)
+- <a href ='https://taurex3-public.readthedocs.io/en/latest/'>taurex</a> (ensure you have the correct installation source) 
 - tensorflow (Tensorflow-gpu)
 - keras
-- wandb
 - scikit-learn
 - shap
 - joblib
@@ -33,5 +32,5 @@
 - statsmodels
 - plotly
 - argparse
-- pychegp (ensure you have the correct installation source)
+- <a href ='https://arxiv.org/pdf/2209.11203'>pychegp</a> (ensure you have the correct installation source)
 
