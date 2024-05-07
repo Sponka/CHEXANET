@@ -18,4 +18,4 @@ The notebook contains an example of a network evaluation code. Due to size restr
 | C/O Ratio | Temperature | Metallicity |
 |-----------|-------------|-------------|
 | ![C/O Ratio](figures/h2o_coratio.png) | ![Temperature](figures/h2o_temp.png) | ![Metallicity](figures/h2o_metallicity.png) |
-<p align="center">Figure 2: Distribution of predicted values for molecule H2O in all layers vs error calculated by network_prediction - ground truth, coloured by C/O ratio, Temperature and Metallicity.</p>
+<p align="center">Figure 3: Distribution of predicted values for molecule H2O in all layers vs error calculated by network_prediction - ground truth, coloured by C/O ratio, Temperature and Metallicity.</p>
