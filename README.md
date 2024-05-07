@@ -8,6 +8,30 @@
 
 
  # Prerequisites 
- • Tensorflow (Tensorflow-gpu) \
- 
+ - numpy
+- pandas
+- matplotlib
+- tabulate
+- itertools
+- os
+- glob
+- logging
+- datetime
+- random
+- string
+- copy
+- scipy
+- forecaster (ensure you have the correct installation source)
+- taurex (ensure you have the correct installation source)
+- tensorflow (Tensorflow-gpu)
+- keras
+- wandb
+- scikit-learn
+- shap
+- joblib
+- seaborn
+- statsmodels
+- plotly
+- argparse
+- pychegp (ensure you have the correct installation source)
 
