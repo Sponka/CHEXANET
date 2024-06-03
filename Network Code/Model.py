@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 import gc
 import os
 import glob
@@ -401,16 +407,31 @@ class UpdateDynamicWeightsCallback(tf.keras.callbacks.Callback):
             self.loss_instance.update_dynamic_weights(average_val_loss)
 # =============================================================================
 
+
 # Data Loading
 # =============================================================================
 
 configuration = pd.read_csv('../data/configuration/system_configuration.csv')
 
-configuration['co_ratio']=configuration['co_ratio']/configuration['co_ratio'].max()
-configuration['planet_radius']=configuration['planet_radius']/configuration['planet_radius'].max()
-configuration['planet_mass']=configuration['planet_mass']/configuration['planet_mass'].max()
-configuration['isothermal_T']=configuration['isothermal_T']/configuration['isothermal_T'].max()
-configuration['metalicity']=configuration['metalicity']/configuration['metalicity'].max()
+par_min = configuration['co_ratio'].min()
+par_max = configuration['co_ratio'].max()
+configuration['co_ratio']=(configuration['co_ratio']-par_min)/(par_max-par_min) * 2 - 1
+
+par_min = 0.3370963034022992 
+par_max = 3.876389678499647
+configuration['planet_radius']=(configuration['planet_radius']-par_min)/(par_max-par_min) * 2 - 1
+
+par_min = 0.3
+par_max = 10
+configuration['planet_mass']=(configuration['planet_mass']-par_min)/(par_max-par_min) * 2 - 1
+
+par_min = 1100
+par_max = 2000
+configuration['isothermal_T']=(configuration['isothermal_T']-par_min)/(par_max-par_min) * 2 - 1
+
+par_min = 0.5
+par_max = 100
+configuration['metalicity']=(configuration['metalicity']-par_min)/(par_max-par_min) * 2 - 1
 
 save_molecules = np.array([ 34,  36,  39,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,
         51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,
@@ -461,4 +482,28 @@ callbacks = [WandbMetricsLogger(), wandb_custom_callback,
 
 model.compile(optimizer=Adam(learning_rate=learning_rate_value), loss=dynamic_loss )
 model.fit(train_generator, epochs=epoch_num, validation_data=val_generator,callbacks=callbacks, steps_per_epoch=steps_per_epoch)
+
+
+# In[ ]:
+
+
+input_shape = (64, 64, 1)
+inputs = tf.keras.Input(shape=input_shape)
+additional_input_shape = (5,)
+additional_input = tf.keras.Input(shape=additional_input_shape)
+
+output = network(inputs,additional_input)
+model = Model(inputs=[inputs,additional_input], outputs=output)
+
+
+# In[ ]:
+
+
+model.summary()
+
+
+# In[ ]:
+
+
+
 
