@@ -413,8 +413,8 @@ class UpdateDynamicWeightsCallback(tf.keras.callbacks.Callback):
 
 configuration = pd.read_csv('../data/configuration/system_configuration.csv')
 
-par_min = configuration['co_ratio'].min()
-par_max = configuration['co_ratio'].max()
+par_min = 0.4
+par_max = 1.5
 configuration['co_ratio']=(configuration['co_ratio']-par_min)/(par_max-par_min) * 2 - 1
 
 par_min = 0.3370963034022992 
