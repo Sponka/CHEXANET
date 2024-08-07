@@ -362,7 +362,8 @@ class DynamicMAELoss(tf.keras.losses.Loss):
 
     def call(self, y_true, y_pred):
         if self.current_epoch <= self.N:            
-            return tf.reduce_mean(tf.abs(y_true - y_pred)) 
+            return tf.reduce_mean(tf.abs(y_true - y_pred))
+        else:
             weights = tf.fill(tf.shape(y_true), 1.0)
             if self.dynamic_weights is not None:
                 dynamic_mask = tf.greater(self.dynamic_weights, self.threshold)
