@@ -16,6 +16,8 @@ The notebook contains an example of a network evaluation code. Due to size restr
 ![Error vs Temperature](figures/MAE_vs_Temperature_Mass_color_ModelD.png)
 <p align="center">Figure 3: Comparative visualisation of MAE against Isothermal Temperature for D coloured by Planet Mass.</p>
 
+
+
 | C/O Ratio | Temperature | Metallicity |
 |-----------|-------------|-------------|
 | ![C/O Ratio](figures/co2_coratio.png) | ![Temperature](figures/co2_temp.png) | ![Metallicity](figures/co2_metallicity.png) |
