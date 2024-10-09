@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[5]:
 
 
 import gc
@@ -74,8 +74,8 @@ def data_norm(name, output = False, save_idx=None):
         arr = arr[-1]
     if save_idx is not None:
         arr = arr[save_idx,:]
-    arr = np.log10(arr)[:,:64] # logarithm 
-    arr = arr.reshape((64,64,1))
+    arr = np.log10(arr)[:,:96] # logarithm 
+    arr = arr.reshape((64,96,1))
     arr = preprocessing_function(arr) # logarithm 
     return arr
 
@@ -154,11 +154,11 @@ def activation_function(conv, act_type='lrelu', name='activation'):
         return result
     
     
-def model_additional_info(input_dim = 5, output_shape = (8, 8, 1)):
+def model_additional_info(input_dim=5, output_shape=(8,12,1)):
     """
     Creates a neural network model that takes a vector of specified input dimensions
     and outputs a map of specified shape.
-    
+
     Parameters:
     input_dim (int): Number of variables in the input vector.
     output_shape (tuple): Dimensions of the output map.
@@ -167,15 +167,20 @@ def model_additional_info(input_dim = 5, output_shape = (8, 8, 1)):
     model: A Keras Sequential model.
     """
 
+    from keras.models import Sequential
+    from keras.layers import Dense, Reshape
+
     model = Sequential()
     model.add(Dense(32, activation='linear', input_dim=input_dim))
-    model.add(LeakyReLU(alpha=0.2))
+    model.add(LeakyReLU(alpha=0.2))  # First layer
     model.add(Dense(64, activation='linear'))
-    model.add(LeakyReLU(alpha=0.2))
+    model.add(LeakyReLU(alpha=0.2))                       # Second layer
     model.add(Dense(output_shape[0] * output_shape[1], activation='linear'))
-    model.add(LeakyReLU(alpha=0.2)) 
-    model.add(Reshape(output_shape))
+    model.add(LeakyReLU(alpha=0.2))  # Output layer
+    model.add(Reshape(output_shape))                              # Reshaping output
+
     return model
+
 
 
 def convolution_module(input_tensor, filters,num, drop_rate = 0.2):
@@ -218,7 +223,7 @@ def attention_upsample_and_concat(x1, x2, output_channels, in_channels, filters,
     return conv
 
 
-def network(input, additional_input, additional_output_shape = (8, 8, 1)):
+def network(input, additional_input, additional_output_shape = (8, 12, 1)):
     pool1, conv1 = convolution_module(input, 32,1)
     pool2, conv2 = convolution_module(pool1, 64,2)
     pool3, conv3 = convolution_module(pool2, 128,3)
@@ -240,27 +245,6 @@ def network(input, additional_input, additional_output_shape = (8, 8, 1)):
 # Callbacks
 # =============================================================================
 
-def get_updated_M_for_epoch(current_epoch, N_start = 10, N_end = 20,
-                            M_start = 10.0, M_end = 1.5):
-    #N_start = 10
-    #N_end = 20
-    #M_start = 5.0
-    #M_end = 2.0
-
-    # Check if current_epoch is less than N_start
-    if current_epoch < N_start:
-        return M_start
-
-    # Check if current_epoch is greater than N_end
-    elif current_epoch > N_end:
-        return M_end
-    else:
-        # Calculate the step change for M
-        M_step = (M_start - M_end) / float(N_end - N_start)
-        # Calculate the updated M for the current epoch
-        M = M_start - (float(current_epoch) - N_start) * M_step
-        M = tf.maximum(M, M_end)  # Ensure M does not go below M_end
-        return float(M)
 
 
 class WandbCustomCallback(Callback):
@@ -339,73 +323,6 @@ class WandbCustomCallback(Callback):
         log_data = ((scaled_data + 1) / 2) * (max_value - min_value) + min_value
         return log_data
 
-
-class DynamicMAELoss(tf.keras.losses.Loss):
-    def __init__(self,output_shape, N=1, threshold=0.015, pixel_positions=None, **kwargs):
-        super().__init__(**kwargs)
-        self.N = N
-        self.threshold = threshold
-        self.pixel_positions = tf.constant(pixel_positions, dtype=tf.int32) if pixel_positions is not None else None
-        self.dynamic_weights = tf.Variable(tf.fill([1,64,64,1], 1.0), dtype=tf.float32, trainable=False) 
-        self.current_epoch = tf.Variable(0, trainable=False, dtype=tf.int32)
-
-
-    def update_dynamic_weights(self, weights):
-        self.dynamic_weights.assign(weights)
-
-    def weighted_mae(self, y_true, y_pred, weights):
-        return tf.reduce_mean(tf.abs(y_true - y_pred) * weights) 
-
-    def increment_epoch(self):
-        self.current_epoch.assign_add(1)
-
-
-    def call(self, y_true, y_pred):
-        if self.current_epoch <= self.N:            
-            return tf.reduce_mean(tf.abs(y_true - y_pred))
-        else:
-            weights = tf.fill(tf.shape(y_true), 1.0)
-            if self.dynamic_weights is not None:
-                dynamic_mask = tf.greater(self.dynamic_weights, self.threshold)
-                dynamic_mask = tf.broadcast_to(dynamic_mask, tf.shape(weights)) 
-                weights = tf.where(dynamic_mask, 1.2, weights)
-
-                if self.pixel_positions is not None:
-                    for pos in self.pixel_positions:
-                        indices = tf.stack([tf.range(tf.shape(y_true)[0]),
-                                            tf.fill([tf.shape(y_true)[0]], pos[0]),
-                                            tf.fill([tf.shape(y_true)[0]], pos[1])],
-                                            axis=1)
-                        updated_M = get_updated_M_for_epoch(self.current_epoch.value())
-                        updates = tf.fill([tf.shape(indices)[0], 1], updated_M)
-                        weights = tf.tensor_scatter_nd_update(weights, indices, updates)
-        return self.weighted_mae(y_true, y_pred, weights)
-
-
-class UpdateDynamicWeightsCallback(tf.keras.callbacks.Callback):
-    def __init__(self, loss_instance, val_generator, N):
-        super().__init__()
-        self.loss_instance = loss_instance
-        self.val_generator = val_generator
-        self.N = N
-
-    def on_epoch_begin(self, epoch, logs=None):
-        # Update the current epoch attribute in the loss instance
-        gc.collect()
-        self.loss_instance.increment_epoch()
-    def on_epoch_end(self, epoch, logs=None):
-        if self.loss_instance.current_epoch >= self.N:
-            total_loss = 0
-            batches = 0
-            for x, y in self.val_generator:
-                val_preds = self.model.predict(x, verbose = 0)
-                total_loss += np.mean(np.abs(val_preds - y), axis=0)
-                batches += 1
-                if batches >=160: # len(self.val_generator):
-                    break
-            average_val_loss = total_loss / batches
-            average_val_loss = np.reshape(average_val_loss, (1, 64, 64, 1))
-            self.loss_instance.update_dynamic_weights(average_val_loss)
 # =============================================================================
 
 
@@ -464,13 +381,7 @@ additional_input = tf.keras.Input(shape=additional_input_shape)
 
 output = network(inputs,additional_input)
 model = Model(inputs=[inputs,additional_input], outputs=output)
-
-positions = [...]
-
-output_shape_loss = [16, 64, 64, 1]
 wandb_custom_callback = WandbCustomCallback(val_generator, 2, molecules)
-dynamic_loss = DynamicMAELoss(output_shape=output_shape_loss, N=0, threshold=0.009, pixel_positions=positions)
-update_epoch_callback = UpdateDynamicWeightsCallback(dynamic_loss, val_generator, N=0)
 
 callbacks = [WandbMetricsLogger(), wandb_custom_callback,
     ModelCheckpoint(filepath=f'{version_name}/{model_version}.h5', monitor='val_loss',
@@ -478,17 +389,16 @@ callbacks = [WandbMetricsLogger(), wandb_custom_callback,
     TensorBoard(log_dir='logs'),
     EarlyStopping(monitor='val_loss', patience=7),
     ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=4, min_lr=0.2*0.2*learning_rate_value),
-    CSVLogger(f'{version_name}/training_log.csv'),
-    update_epoch_callback]
+    CSVLogger(f'{version_name}/training_log.csv')]
 
-model.compile(optimizer=Adam(learning_rate=learning_rate_value), loss=dynamic_loss )
+model.compile(optimizer=Adam(learning_rate=learning_rate_value), loss='mean_absolute_error' )
 model.fit(train_generator, epochs=epoch_num, validation_data=val_generator,callbacks=callbacks, steps_per_epoch=steps_per_epoch)
 
 
-# In[ ]:
+# In[2]:
 
 
-input_shape = (64, 64, 1)
+input_shape = (64, 96, 1)
 inputs = tf.keras.Input(shape=input_shape)
 additional_input_shape = (5,)
 additional_input = tf.keras.Input(shape=additional_input_shape)
