@@ -33,3 +33,28 @@
 - argparse
 - <a href ='https://arxiv.org/pdf/2209.11203'>pychegp</a> (ensure you have the correct installation source)
 
+
+## 📖 Cite this work
+
+If you use **CHEXANET** in your research, please cite:
+
+> **Vojtekova, A., Waldmann, I., Yip, K. H., Merín, B., Al-Refaie, A. F., & Venot, O. (2025).**  
+> *CHEXANET: a novel approach to fast-tracking disequilibrium chemistry calculations for exoplanets using neural networks.*  
+> **Monthly Notices of the Royal Astronomical Society, 538(3), 1690–1719.**  
+> [https://doi.org/10.1093/mnras/staf297](https://doi.org/10.1093/mnras/staf297)
+
+BibTeX:
+```bibtex
+@ARTICLE{2025MNRAS.538.1690V,
+       author = {{Vojtekova}, Antonia and {Waldmann}, Ingo and {Yip}, Kai Hou and {Mer{\'\i}n}, Bruno and {Al-Refaie}, Ahmed Faris and {Venot}, Olivia},
+        title = "{CHEXANET: a novel approach to fast-tracking disequilibrium chemistry calculations for exoplanets using neural networks}",
+      journal = {\mnras},
+         year = 2025,
+        month = apr,
+       volume = {538},
+       number = {3},
+        pages = {1690-1719},
+          doi = {10.1093/mnras/staf297},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2025MNRAS.538.1690V},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
