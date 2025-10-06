@@ -8,6 +8,15 @@
 
 
  # Prerequisites 
+We recommend creating two separate Python environments, as data generation and network training rely on different dependencies.
+
+requirements-data.txt — for chemistry data generation using FRECKLL, TauREx, and related tools.
+
+requirements-train.txt — for neural network training, explainability, and analysis (TensorFlow, Keras, SHAP, etc.).
+
+This separation ensures cleaner dependency management and prevents version conflicts.
+
+In general, the main libraries used across both environments include: 
 - numpy
 - pandas
 - matplotlib
@@ -67,4 +76,5 @@ BibTeX:
        adsurl = {https://ui.adsabs.harvard.edu/abs/2025MNRAS.538.1690V},
       adsnote = {Provided by the SAO/NASA Astrophysics Data System}
 }
+
 
