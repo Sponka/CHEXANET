@@ -34,6 +34,15 @@
 - <a href ='https://arxiv.org/pdf/2209.11203'>pychegp</a> (ensure you have the correct installation source)
 
 
+### ⚠️ Note on Data Generation
+
+The disequilibrium chemistry datasets used in this study were generated using an **older version of PYCHEGP [(FRECKLL)](https://ahmed-f-alrefaie.github.io/freckll/)**.  
+Since the publication of our paper, a **new version of FRECKLL** has been released.
+
+While the core methodology and principles remain consistent, users reproducing the data generation pipeline are encouraged to refer to the **latest FRECKLL documentation** for up-to-date usage and installation instructions.
+
+
+
 ## 📖 Cite this work
 
 If you use **CHEXANET** in your research, please cite:
@@ -58,3 +67,4 @@ BibTeX:
        adsurl = {https://ui.adsabs.harvard.edu/abs/2025MNRAS.538.1690V},
       adsnote = {Provided by the SAO/NASA Astrophysics Data System}
 }
+
